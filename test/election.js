@@ -27,5 +27,21 @@ contract("Election", function(accounts){
 			assert.equal(candidate[2],0,"correct vote");
 		});
 	});
+
+	it("Checks for voter votes", function(){
+		return Election.deployed().then(function(instance){
+			electionInstance = instance;
+			candidateId = 1;
+			return electionInstance.vote(candidateId,{from :accounts[0]});
+ 		}).then(function(reciept){
+ 			return electionInstance.voters(accounts[0]);
+ 		}).then(function(voted){
+ 			//true if voted else false
+ 			assert(voted, "The voter marked as vote");
+ 			return electionInstance.candidates(candidateId);
+ 		}).then(function(candidate){
+ 			assert.equal(candidate[2],1,"Increment the candidates vote count");
+ 		})
+	});
 });
 

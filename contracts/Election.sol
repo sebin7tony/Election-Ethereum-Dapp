@@ -13,6 +13,8 @@ contract Election{
 	//Fetch candidate
 	//mapping is kind of hashmap
 	mapping(uint=>Candidate) public candidates;
+	//store accounts that already have voted
+	mapping(address=>bool) public voters;
 
 	//Candidate count
 	uint public candidateCount;
@@ -27,6 +29,18 @@ contract Election{
 	function addCandidate(string _name) private{
 		candidateCount++;
 		candidates[candidateCount] = Candidate(candidateCount,_name,0);
+	}
+
+	//This function does the voting 
+	function vote(uint _candidateId) public {
+		//validate the sender is not voted yet
+		require(!voters[msg.sender]);
+		//validate the candidateId passed is valid
+		require(_candidateId > 0 && _candidateId <=candidateCount);
+		//store that current user is voted already
+		voters[msg.sender] = true;
+		//update vote count
+		candidates[_candidateId].voteCount++;
 	}
 }
 
